@@ -1,25 +1,16 @@
 'use strict'
 
-/*
-|--------------------------------------------------------------------------
-| Database Seeder
-|--------------------------------------------------------------------------
-| Database Seeder can be used to seed dummy data to your application
-| database. Here you can make use of Factories to create records.
-|
-| make use of Ace to generate a new seed
-|   ./ace make:seed [name]
-|
-*/
+const Env = use('Env')
 
-// const Factory = use('Factory')
+module.exports = {
+  connection: Env.get('DB_CONNECTION', 'sqlite'),
 
-class DatabaseSeeder {
-
-  * run () {
-    // yield Factory.model('App/Model/User').create(5)
-  }
-
+  sqlite: {
+    client: 'sqlite3',
+    connection: {
+      filename: Env.get('DB_DATABASE', 'database.sqlite'),
+    },
+    useNullAsDefault: true,
+    debug: Env.get('DB_DEBUG', false),
+  },
 }
-
-module.exports = DatabaseSeeder
