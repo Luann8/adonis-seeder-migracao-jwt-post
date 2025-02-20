@@ -1,17 +1,22 @@
-/** @type {import('@adonisjs/lucid/src/Factory')} */
-const Factory = use('Factory')
-const User = use('App/Models/User') // Importando o modelo de usuário
+'use strict'
+
+const User = use('App/Models/User')
 
 class DatabaseSeeder {
   async run() {
-    // Criar um usuário manualmente
-    const user = await User.create({
-      username: 'usuario_exemplo',
-      email: 'usuario@example.com',
-      password: 'senha123', // Certifique-se de que o modelo User tem um hook para hash da senha
-    })
+    const userExists = await User.findBy('email', 'usuario@example.com')
 
-    console.log('Usuário criado:', user.toJSON())
+    if (!userExists) {
+      const user = await User.create({
+        username: 'usuario_exemplo',
+        email: 'usuario@example.com',
+        password: 'senha123', // A senha será criptografada automaticamente
+      })
+
+      console.log('Usuário criado:', user.toJSON())
+    } else {
+      console.log('Usuário com esse email já existe.')
+    }
   }
 }
 

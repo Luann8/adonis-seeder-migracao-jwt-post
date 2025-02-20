@@ -1,8 +1,12 @@
 'use strict'
-const Route = use('Route')
+
+const Route = use('Route') // Importando o Route corretamente
+const User = use('App/Models/User') // Importando o modelo User
+const Hash = use('Hash') // Importando o Hash para criptografar as senhas
 
 // Rota GET simples para a raiz (teste inicial)
 Route.get('/', async ({ response }) => {
+  console.log("Raiz acessada")
   return response.send({
     message: 'Servidor funcionando! Use POST /login ou POST /calculate-average.'
   })
@@ -10,6 +14,7 @@ Route.get('/', async ({ response }) => {
 
 // Rota de login com JWT
 Route.post('/login', async ({ request, auth, response }) => {
+  console.log("Login solicitado")
   const { email, password } = request.post()
 
   try {
@@ -28,31 +33,34 @@ Route.post('/login', async ({ request, auth, response }) => {
   }
 })
 
-// Rota protegida para cálculo de média
-Route.post('/calculate-average', async ({ request, response, auth }) => {
+// Rota de registro de usuário
+Route.post('/register', async ({ request, response }) => {
+  console.log("Registro solicitado")
+  const { username, email, password } = request.post()
+
   try {
-    await auth.check()
-    const { numbers } = request.post()
-    if (!Array.isArray(numbers) || numbers.length !== 10) {
-      return response.status(400).send({
-        message: 'O array deve conter exatamente 10 números.'
-      })
+    // Verifica se o email já está cadastrado
+    const userExists = await User.findBy('email', email)
+    if (userExists) {
+      return response.status(400).send({ message: 'Email já cadastrado' })
     }
-    if (!numbers.every(num => typeof num === 'number')) {
-      return response.status(400).send({
-        message: 'Todos os elementos devem ser números.'
-      })
-    }
-    const total = numbers.reduce((acc, num) => acc + num, 0)
-    const average = total / numbers.length
-    return response.send({
-      message: 'A média foi calculada com sucesso!',
-      average
+
+    // Cria o novo usuário
+    const user = await User.create({
+      username,
+      email,
+      password: await Hash.make(password) // Criptografa a senha antes de salvar
+    })
+
+    // Retorna a resposta de sucesso
+    return response.status(201).send({
+      message: 'Usuário registrado com sucesso!',
+      user: { id: user.id, email: user.email, username: user.username }
     })
   } catch (error) {
-    return response.status(401).send({
-      message: 'Token inválido ou ausente.',
+    return response.status(500).send({
+      message: 'Erro ao registrar usuário.',
       error: error.message
     })
   }
-}).middleware('auth')
+})
