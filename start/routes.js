@@ -14,20 +14,37 @@ Route.get('/', async ({ response }) => {
 
 // Rota de login com JWT
 Route.post('/login', async ({ request, auth, response }) => {
-  console.log("Login solicitado")
   const { email, password } = request.post()
 
   try {
-    const user = await auth.attempt(email, password)
+    // Verifica se o usuário existe
+    const user = await User.findBy('email', email)
+    if (!user) {
+      return response.status(401).send({
+        message: 'Credenciais inválidas.',
+        error: 'Usuário não encontrado'
+      })
+    }
+
+    // Verifica a senha usando Hash.verify
+    const passwordValid = await Hash.verify(password, user.password)
+    if (!passwordValid) {
+      return response.status(401).send({
+        message: 'Credenciais inválidas.',
+        error: 'Senha incorreta'
+      })
+    }
+
+    // Gera o token
     const token = await auth.generate(user, { expiresIn: '1h' })
     return response.send({
       message: 'Login realizado com sucesso!',
       token: token.token,
-      user: { id: user.id, email: user.email }
+      user: { id: user.id, email: user.email, username: user.username }
     })
   } catch (error) {
-    return response.status(401).send({
-      message: 'Credenciais inválidas.',
+    return response.status(500).send({
+      message: 'Erro ao realizar login.',
       error: error.message
     })
   }
@@ -63,4 +80,35 @@ Route.post('/register', async ({ request, response }) => {
       error: error.message
     })
   }
+})
+
+// Rota para calcular a média de 10 números
+Route.post('/calculate-average', async ({ request, response }) => {
+  const { numbers } = request.post()
+
+  // Verifica se foram enviados exatamente 10 números
+  if (!Array.isArray(numbers) || numbers.length !== 10) {
+    return response.status(400).send({
+      message: 'Você deve enviar exatamente 10 números.',
+      error: 'Quantidade inválida de números'
+    })
+  }
+
+  // Verifica se todos os elementos são números
+  if (!numbers.every(num => typeof num === 'number')) {
+    return response.status(400).send({
+      message: 'Todos os valores devem ser números.',
+      error: 'Valores inválidos na lista'
+    })
+  }
+
+  // Calcula a média
+  const sum = numbers.reduce((total, num) => total + num, 0)
+  const average = sum / numbers.length
+
+  // Retorna a resposta com a média
+  return response.status(200).send({
+    message: 'Cálculo realizado com sucesso!',
+    average: average
+  })
 })
