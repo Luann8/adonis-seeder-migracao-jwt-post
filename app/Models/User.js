@@ -1,15 +1,25 @@
 'use strict'
+
 const Model = use('Model')
-const Hash = use('Hash')
 
 class User extends Model {
-  static boot () {
+  static get primaryKey() {
+    return 'id'
+  }
+
+  static get table() {
+    return 'users'
+  }
+
+  static boot() {
     super.boot()
-    this.addHook('beforeSave', async (userInstance) => {
-      if (userInstance.dirty.password) {
-        userInstance.password = await Hash.make(userInstance.password)
-      }
-    })
+
+    // Remova ou comente este hook para evitar a criptografia de senhas
+    // this.addHook('beforeSave', async (userInstance) => {
+    //   if (userInstance.dirty.password) {
+    //     userInstance.password = await Hash.make(userInstance.password)
+    //   }
+    // })
   }
 }
 

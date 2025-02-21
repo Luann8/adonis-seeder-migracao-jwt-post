@@ -1,23 +1,25 @@
 'use strict'
 
 const User = use('App/Models/User')
+const Hash = use('Hash')
 
-class DatabaseSeeder {
+class UserSeeder {
   async run() {
+    // Verifica se o usuário já existe
     const userExists = await User.findBy('email', 'usuario@example.com')
 
     if (!userExists) {
-      const user = await User.create({
+      await User.create({
         username: 'usuario_exemplo',
         email: 'usuario@example.com',
-        password: 'senha123', // A senha será criptografada automaticamente
+        password: await Hash.make('senha123') // Criptografando a senha
       })
 
-      console.log('Usuário criado:', user.toJSON())
+      console.log('Usuário criado com sucesso!')
     } else {
       console.log('Usuário com esse email já existe.')
     }
   }
 }
 
-module.exports = DatabaseSeeder
+module.exports = UserSeeder
