@@ -1,13 +1,25 @@
-'use strict'
-
 const Route = use('Route')
 
-// Rota GET simples para a raiz
-Route.get('/', 'MainController.index')
+// Página inicial
+Route.get('/', async ({ auth, view }) => {
+  let isLoggedIn = false
+  try {
+    await auth.check()
+    isLoggedIn = true
+  } catch (error) {
+    isLoggedIn = false
+  }
+  return view.render('index', { isLoggedIn })
+})
 
-// Rotas de autenticação
+// Autenticação
+Route.get('/login', ({ view }) => view.render('login'))
 Route.post('/login', 'AuthController.login')
+Route.get('/register', ({ view }) => view.render('register'))
 Route.post('/register', 'AuthController.register')
 
-// Rota para cálculo de média protegida com middleware auth
-Route.post('/calculate-average', 'CalculateAverageController.calcularMedia').middleware(['auth'])
+// Página de cálculo (após login)
+Route.get('/calculo', ({ view }) => view.render('calculate-average'))
+
+// Processa o cálculo da média
+Route.post('/calculate-average', 'CalculateAverageController.calculateAverage')

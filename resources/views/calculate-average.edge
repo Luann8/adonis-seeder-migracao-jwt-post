@@ -1,0 +1,27 @@
+<head>
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+
+<div class="form-card">
+  <h2>Cálculo de Média</h2>
+  @if(error)
+    <p class="message error">{{ error }}</p>
+  @endif
+  @if(success)
+    <p class="message success">{{ success }}</p>
+  @endif
+  <form action="/calculate-average" method="POST">
+    <label for="numbers">Insira 10 números (separados por vírgulas):</label>
+    <input 
+      type="text" 
+      id="numbers" 
+      name="numbers" 
+      placeholder="Exemplo: 1,2,3,4,5,6,7,8,9,10" 
+      pattern="^\\s*\\d+(\\s*,\\s*\\d+)*\\s*$"
+      title="Digite 10 números separados por vírgulas"
+      required
+    >
+    <button type="submit">Calcular</button>
+  </form>
+</div>

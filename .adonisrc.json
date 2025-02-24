@@ -1,0 +1,14 @@
+{
+    "typescript": false,
+    "autoload": {
+      "App": "./app"
+    },
+    "metaFiles": [
+      "resources/**",
+      "public/**",
+      "database/factory.js"
+    ],
+    "commands": [],
+    "exceptionHandlerNamespace": "App/Exceptions/Handler"
+  }
+  
