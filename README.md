@@ -1,129 +1,38 @@
-# API AdonisJS: Registro, Login e Cálculo de Média
+# Projeto AdonisJS - Cálculo da Média
 
-Esta API é construída usando AdonisJS. Ela permite que os usuários se registrem, façam login e calculem a média de 10 números com autenticação baseada em token.
+Este projeto é uma API simples construída com o framework AdonisJS. Ela permite calcular a média de um array de 10 números inteiros.
 
-## Endpoints Disponíveis
+## Tecnologias
 
-### 1. Registro de Usuário
-**Endpoint:** `/register`
+- **AdonisJS**: Framework web para Node.js.
+- **JavaScript**: Linguagem de programação utilizada.
 
-**Método:** `POST`
+## Funcionalidades
 
-**Descrição:** Registra um novo usuário no sistema.
+- **Rota raiz (`GET /`)**: Exibe uma mensagem de boas-vindas e informações sobre as rotas disponíveis.
+- **Rota de cálculo de média (`POST /calculate-average`)**: Calcula a média de um array de 10 números inteiros.
 
-**Payload:**
-```json
-{
-  "username": "usuario_exemplo",
-  "email": "usuario@example.com",
-  "password": "senha123"
-}
-```
+## Como rodar o projeto
 
-**Resposta de Sucesso:**
-```json
-{
-  "message": "Usuário registrado com sucesso!",
-  "user": {
-    "id": 1,
-    "email": "usuario@example.com",
-    "username": "usuario_exemplo"
-  }
-}
-```
+1. **Clone o repositório**:
 
----
+    ```bash
+    git clone https://github.com/seu-usuario/nome-do-repositorio.git
+    cd nome-do-repositorio
+    ```
 
-### 2. Login do Usuário
-**Endpoint:** `/login`
+2. **Instale as dependências**:
 
-**Método:** `POST`
+    ```bash
+    npm install
+    ```
 
-**Descrição:** Permite que um usuário faça login e receba um token JWT para autenticação.
+3. **Inicie o servidor de desenvolvimento**:
 
-**Payload:**
-```json
-{
-  "email": "usuario@example.com",
-  "password": "senha123"
-}
-```
+    ```bash
+    adonis serve --dev
+    ```
 
-**Resposta de Sucesso:**
-```json
-{
-  "message": "Login realizado com sucesso!",
-  "token": "<token_jwt>",
-  "user": {
-    "id": 1,
-    "email": "usuario@example.com",
-    "username": "usuario_exemplo"
-  }
-}
-```
+4. **Acesse no navegador**:
+    Abra `http://127.0.0.1:3333` para visualizar o projeto.
 
----
-
-### 3. Cálculo da Média
-**Endpoint:** `/calculate-average`
-
-**Método:** `POST`
-
-**Descrição:** Calcula a média de 10 números enviados no corpo da requisição. Este endpoint é protegido e requer autenticação.
-
-**Cabeçalho de Autenticação:**
-```http
-Authorization: Bearer <token_jwt>
-```
-
-**Payload:**
-```json
-{
-  "email": "usuario@example.com",
-  "password": "senha123",
-  "numbers": [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-}
-```
-
-**Resposta de Sucesso:**
-```json
-{
-  "message": "A média foi calculada com sucesso!",
-  "average": 55
-}
-```
-
----
-
-## Observações Importantes
-- O token JWT expira em 1 hora. Certifique-se de fazer login novamente caso ele expire.
-- Os números enviados para cálculo da média devem ser um array de exatamente 10 números inteiros.
-- Use ferramentas como Postman ou Insomnia para testar os endpoints facilmente.
-
----
-
-## Instalação e Configuração
-
-1. Clone o repositório:
-   ```bash
-   git clone <url-do-repositorio>
-   ```
-
-2. Instale as dependências:
-   ```bash
-   npm install
-   ```
-
-3. Configure o arquivo `.env` com as credenciais do banco de dados.
-
-4. Rode as migrações:
-   ```bash
-   adonis migration:run
-   ```
-
-5. Rode o servidor:
-   ```bash
-   adonis serve --dev
-   ```
-
-Agora você pode acessar a API em `http://127.0.0.1:3333`.
